@@ -46,8 +46,10 @@ export default function Home() {
     setReport("");
     setMetrics(null);
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://research-api-509516380442.us-central1.run.app";
-    const apiKeyParam = session?.backendApiKey ? `&api_key=${encodeURIComponent(session.backendApiKey)}` : "";
+    const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || "https://research-api-509516380442.us-central1.run.app";
+    const apiUrl = rawApiUrl.replace(/\/+$/, "");
+    const apiKey = (session?.backendApiKey as string) || "dev-secret-key";
+    const apiKeyParam = `&api_key=${encodeURIComponent(apiKey)}`;
     const eventSource = new EventSource(`${apiUrl}/api/research?question=${encodeURIComponent(query)}${apiKeyParam}`);
     eventSourceRef.current = eventSource;
 
@@ -94,8 +96,10 @@ export default function Home() {
     if (!taskId) return;
     
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://research-api-509516380442.us-central1.run.app";
-      const apiKeyParam = session?.backendApiKey ? `?api_key=${encodeURIComponent(session.backendApiKey as string)}` : "";
+      const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || "https://research-api-509516380442.us-central1.run.app";
+      const apiUrl = rawApiUrl.replace(/\/+$/, "");
+      const apiKey = (session?.backendApiKey as string) || "dev-secret-key";
+      const apiKeyParam = `?api_key=${encodeURIComponent(apiKey)}`;
       
       // Call the backend to revoke the task
       await fetch(`${apiUrl}/api/research/${taskId}/stop${apiKeyParam}`, { method: 'POST' });
