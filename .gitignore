@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+.env
+
+# Output reports
+output/
+!output/.gitkeep
+
+# Logs, personal notes, and temporary files
+*.log
+*.tmp
+scratch/
+explanation.md
+explaination.md
+files_description.md
+field_notes.md
+
+# IDE and OS settings
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Frontend (Node.js & Next.js)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+.npm/

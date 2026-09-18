@@ -1,0 +1,51 @@
+name: Deploy to Google Cloud Run
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  PROJECT_ID: webscrapper-506311
+  REGION: us-central1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    # Required for Workload Identity Federation (OIDC)
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          # This tells GitHub to ask Google for a temporary token using our Provider
+          workload_identity_provider: 'projects/509516380442/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
+          service_account: 'github-actions@webscrapper-506311.iam.gserviceaccount.com'
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy Backend API
+        run: |
+          gcloud run deploy research-api \
+            --source . \
+            --region ${{ env.REGION }} \
+            --project ${{ env.PROJECT_ID }} \
+            --quiet
+
+      - name: Deploy Frontend
+        working-directory: ./frontend
+        run: |
+          gcloud run deploy research-frontend \
+            --source . \
+            --region ${{ env.REGION }} \
+            --project ${{ env.PROJECT_ID }} \
+            --allow-unauthenticated \
+            --quiet

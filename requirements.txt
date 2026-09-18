@@ -1,0 +1,23 @@
+# Web Search & Scraping
+ddgs
+trafilatura>=2.2.0
+
+# HTTP & HTML Parsing (trafilatura dependencies & general usage)
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=5.1.0
+
+# LLM Backend Connection & Structuring
+openai>=1.10.0
+pydantic>=2.6.0
+
+# Utilities
+python-dotenv>=1.0.0
+
+# API & Backend
+fastapi>=0.109.0
+uvicorn>=0.27.0
+sse-starlette>=2.0.0
+motor>=3.3.2
+google-cloud-tasks
+redis>=5.0.1
