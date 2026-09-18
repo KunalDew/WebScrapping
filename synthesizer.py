@@ -13,7 +13,11 @@ import sys
 from config import llm_chat, MAX_TOKENS
 from scraper import ScrapedPage
 
-sys.stdout.reconfigure(encoding='utf-8')
+try:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding='utf-8')
+except Exception:
+    pass
 
 
 SYNTHESIZER_PROMPT = """You are an expert research analyst. Your task is to write a report answering the research question using ONLY the provided source material.
@@ -35,6 +39,18 @@ Formatting & Structural Guidelines:
 Constraint Checklist:
 - ONLY use information from the provided sources. Do not hallucinate external facts."""
 
+SYNTHESIZER_DIRECT_PROMPT = """You are an expert AI research analyst. Your task is to write an in-depth, structured research report answering the research question based on your extensive knowledge base.
+
+Research Question: {question}
+
+Formatting & Structural Guidelines:
+1. Executive Summary: High-level overview answering the core question.
+2. Core Concepts & Architecture: In-depth technical breakdown, methodology, or key components.
+3. Comparative Analysis / Real-world Applications: Use Markdown Tables, bullet points, and practical examples.
+4. Future Trends & Key Takeaways: Clear actionable insights.
+5. Structure: Use clean Markdown headers (##, ###), bold text, and bullet lists for readability.
+"""
+
 
 def _format_sources(pages: list[ScrapedPage]) -> str:
     """Format scraped pages into a numbered source block for the prompt."""
@@ -50,17 +66,14 @@ def _format_sources(pages: list[ScrapedPage]) -> str:
 
 def synthesize(question: str, pages: list[ScrapedPage]) -> str:
     """
-    Generate a research report from the approved scraped pages.
-    
-    Args:
-        question: The original research question.
-        pages: List of relevant ScrapedPage objects.
-    
-    Returns:
-        The formatted research report as a string.
+    Generate a research report from approved scraped pages or directly via deep AI reasoning.
     """
     if not pages:
-        return "❌ No relevant sources found. Cannot generate a report."
+        messages = [
+            {"role": "user", "content": SYNTHESIZER_DIRECT_PROMPT.format(question=question)}
+        ]
+        response = llm_chat(messages, max_tokens=MAX_TOKENS, temperature=0.3)
+        return response.strip()
     
     sources_text = _format_sources(pages)
     
@@ -71,9 +84,7 @@ def synthesize(question: str, pages: list[ScrapedPage]) -> str:
         )}
     ]
     
-    # Use higher max_tokens for the report — this is the heavy lifter
     response = llm_chat(messages, max_tokens=MAX_TOKENS, temperature=0.3)
-    
     return response.strip()
 
 

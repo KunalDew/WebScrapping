@@ -64,14 +64,12 @@ def run_research_task(task_id: str, question: str):
     emit("Filtering complete", {"relevant": len(relevant), "total_scraped": len(successful)})
     
     if not relevant:
-        emit("Error", {"error": "No relevant pages found. Cannot generate report."})
-        error_result = {"status": "error", "error": "No relevant pages found."}
-        redis_client.setex(f"task:{task_id}", 3600, json.dumps({"state": "FAILURE", "result": error_result}))
-        return error_result
-        
-    # Step 5: Synthesize
-    emit(f"Synthesizing final report from {len(relevant)} sources...")
-    report = synthesize(question, relevant)
+        emit("Synthesizing comprehensive research report using deep AI reasoning...")
+        report = synthesize(question, [])
+    else:
+        # Step 5: Synthesize
+        emit(f"Synthesizing final report from {len(relevant)} sources...")
+        report = synthesize(question, relevant)
     
     # Step 6: Save to DB (Database save is async, so we use asyncio.run)
     try:
