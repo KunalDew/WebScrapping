@@ -46,7 +46,7 @@ export default function Home() {
     setReport("");
     setMetrics(null);
 
-    const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || "https://research-api-509516380442.us-central1.run.app";
+    const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || "https://webscrapping-backend-lit3.onrender.com";
     const apiUrl = rawApiUrl.replace(/\/+$/, "");
     const apiKey = (session?.backendApiKey as string) || "dev-secret-key";
     const apiKeyParam = `&api_key=${encodeURIComponent(apiKey)}`;
@@ -96,7 +96,7 @@ export default function Home() {
     if (!taskId) return;
     
     try {
-      const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || "https://research-api-509516380442.us-central1.run.app";
+      const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || "https://webscrapping-backend-lit3.onrender.com";
       const apiUrl = rawApiUrl.replace(/\/+$/, "");
       const apiKey = (session?.backendApiKey as string) || "dev-secret-key";
       const apiKeyParam = `?api_key=${encodeURIComponent(apiKey)}`;

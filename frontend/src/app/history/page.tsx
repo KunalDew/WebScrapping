@@ -22,8 +22,10 @@ export default function HistoryPage() {
 
     const fetchLogs = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://research-api-509516380442.us-central1.run.app";
-        const res = await fetch(`${apiUrl}/api/logs?api_key=${encodeURIComponent(session.backendApiKey as string)}`);
+        const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || "https://webscrapping-backend-lit3.onrender.com";
+        const apiUrl = rawApiUrl.replace(/\/+$/, "");
+        const apiKey = (session?.backendApiKey as string) || "dev-secret-key";
+        const res = await fetch(`${apiUrl}/api/logs?api_key=${encodeURIComponent(apiKey)}`);
         if (res.ok) {
           const data = await res.json();
           setLogs(data.logs || []);
